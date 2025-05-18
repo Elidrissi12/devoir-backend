@@ -1,6 +1,10 @@
 package com.example.devoir.controllers;
 
+import com.example.devoir.models.Student;
+import com.example.devoir.models.Teacher;
 import com.example.devoir.models.User;
+import com.example.devoir.services.StudentService;
+import com.example.devoir.services.TeacherService;
 import com.example.devoir.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,15 +12,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private StudentService studentService;
+    @Autowired
+    private TeacherService teacherService;
 
     // Inscription d'un utilisateur
-    @PostMapping("/signup")
+   /* @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody User user) {
         // Vérification si l'email est déjà pris
         Optional<User> existingUser = userService.findByEmail(user.getEmail());
@@ -29,19 +38,53 @@ public class AuthController {
         return ResponseEntity.ok("User registered successfully.");
     }
 
-    // Connexion d'un utilisateur
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
+    */
+
+
+
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@RequestBody User user) {
         Optional<User> existingUser = userService.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
-            // Vérification du mot de passe sans encodage
+            return ResponseEntity.badRequest().body("Email already in use.");
+        }
+
+        // Save user
+        User savedUser = userService.createUser(user);
+
+        // Depending on role, create Student or Teacher
+        switch (savedUser.getRole()) {
+            case STUDENT:
+                Student student = new Student();
+                student.setUser(savedUser);
+                studentService.saveStudent(student);
+                break;
+            case TEACHER:
+                Teacher teacher = new Teacher();
+                teacher.setUser(savedUser);
+                teacherService.saveTeacher(teacher);
+                break;
+            default:
+                // Do nothing for ADMIN
+                break;
+        }
+
+        return ResponseEntity.ok("User registered successfully.");
+    }
+
+
+    // Connexion d'un utilisateur
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody User user) {
+        Optional<User> existingUser = userService.findByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
             if (user.getPassword().equals(existingUser.get().getPassword())) {
-                return ResponseEntity.ok("Login successful.");
+                return ResponseEntity.ok(existingUser.get());
             } else {
-                return ResponseEntity.badRequest().body("Invalid credentials.");
+                return ResponseEntity.badRequest().body(null);
             }
         }
-        return ResponseEntity.badRequest().body("User not found.");
+        return ResponseEntity.badRequest().body(null);
     }
 
     // Réinitialisation du mot de passe

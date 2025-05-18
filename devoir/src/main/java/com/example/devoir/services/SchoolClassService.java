@@ -20,6 +20,10 @@ public class SchoolClassService {
         return schoolClassRepository.save(schoolClass);
     }
 
+    public List<SchoolClass> getAllClasses() {
+        return schoolClassRepository.findAll();
+    }
+
     public List<SchoolClass> getClassesByTeacher(Teacher teacher) {
         return schoolClassRepository.findByTeacher(teacher);
     }

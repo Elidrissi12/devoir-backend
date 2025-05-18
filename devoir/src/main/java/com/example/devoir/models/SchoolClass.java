@@ -1,5 +1,6 @@
 package com.example.devoir.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class SchoolClass {
 
 
     @ManyToOne
+    @JsonBackReference
     private Teacher teacher;  // Many teachers for each class
 
     @OneToMany(mappedBy = "schoolClass")
@@ -32,5 +34,21 @@ public class SchoolClass {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 }

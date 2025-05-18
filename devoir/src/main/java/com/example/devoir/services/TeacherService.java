@@ -17,6 +17,14 @@ public class TeacherService {
         return teacherRepository.findBySubject(subject);
     }
 
+    public Teacher saveTeacher(Teacher teacher) {
+        return teacherRepository.save(teacher);
+    }
+
+    public List<Teacher> getAllTeachers() {
+        return teacherRepository.findAll();
+    }
+
     public List<Teacher> getTeachersByClass(SchoolClass schoolClass) {
         return teacherRepository.findBySchoolClasses(schoolClass);
     }

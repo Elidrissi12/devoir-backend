@@ -1,6 +1,7 @@
 package com.example.devoir.controllers;
 
 import com.example.devoir.models.SchoolClass;
+import com.example.devoir.models.Student;
 import com.example.devoir.models.Teacher;
 import com.example.devoir.services.SchoolClassService;  // Assurez-vous d'importer le service
 import com.example.devoir.services.TeacherService;
@@ -20,11 +21,24 @@ public class TeacherController {
     @Autowired
     private SchoolClassService schoolClassService;  // Ajout de la dépendance SchoolClassService
 
+
+
+    @GetMapping
+    public List<Teacher> getAllTeachers() {
+        return teacherService.getAllTeachers();
+    }
+
     // Récupérer les enseignants par matière
     @GetMapping("/subject/{subject}")
     public List<Teacher> getTeachersBySubject(@PathVariable String subject) {
         return teacherService.getTeachersBySubject(subject);
     }
+
+    @PostMapping
+    public Teacher createTeacher(@RequestBody Teacher teacher) {
+        return teacherService.saveTeacher(teacher);
+    }
+
 
     // Récupérer les enseignants par classe
     @GetMapping("/class/{classId}")

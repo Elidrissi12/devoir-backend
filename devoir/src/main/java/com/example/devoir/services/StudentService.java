@@ -19,6 +19,15 @@ public class StudentService {
         return studentRepository.findBySchoolClass(schoolClass);
     }
 
+    public Student saveStudent(Student student) {
+        return studentRepository.save(student);
+    }
+
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
+    }
+
+
     public List<Student> getStudentsByAverageGrade(Double grade) {
         return studentRepository.findByAverageGradeGreaterThan(grade);
     }

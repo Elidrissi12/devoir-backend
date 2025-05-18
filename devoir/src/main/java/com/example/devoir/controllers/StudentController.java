@@ -19,6 +19,19 @@ public class StudentController {
     @Autowired
     private SchoolClassService schoolClassService;
 
+
+    @GetMapping
+    public List<Student> getAllStudents() {
+        return studentService.getAllStudents();
+    }
+
+
+    @PostMapping
+    public Student createStudent(@RequestBody Student student) {
+        return studentService.saveStudent(student);
+    }
+
+
     @GetMapping("/class/{classId}")
     public List<Student> getStudentsByClass(@PathVariable Long classId) {
         SchoolClass schoolClass = schoolClassService.getSchoolClassById(classId);
