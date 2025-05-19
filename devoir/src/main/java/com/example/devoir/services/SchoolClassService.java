@@ -4,6 +4,7 @@ import com.example.devoir.models.SchoolClass;
 import com.example.devoir.models.Student;
 import com.example.devoir.models.Teacher;
 import com.example.devoir.repositories.SchoolClassRepository;
+import com.example.devoir.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,8 @@ public class SchoolClassService {
 
     @Autowired
     private SchoolClassRepository schoolClassRepository;
+    @Autowired
+    private StudentRepository studentRepository;
 
     public SchoolClass createClass(SchoolClass schoolClass) {
         return schoolClassRepository.save(schoolClass);
@@ -28,10 +31,13 @@ public class SchoolClassService {
         return schoolClassRepository.findByTeacher(teacher);
     }
 
-    public void addStudentToClass(Long classId, Student student) {
+    public void addStudentToClass(Long classId, Long studentId) {
         SchoolClass schoolClass = schoolClassRepository.findById(classId)
                 .orElseThrow(() -> new RuntimeException("Class not found"));
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
         schoolClass.getStudents().add(student);
+        student.setSchoolClass(schoolClass);
+        studentRepository.save(student);
         schoolClassRepository.save(schoolClass);
     }
 

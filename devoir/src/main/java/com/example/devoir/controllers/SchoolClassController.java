@@ -3,7 +3,9 @@ package com.example.devoir.controllers;
 import com.example.devoir.models.SchoolClass;
 import com.example.devoir.models.Student;
 import com.example.devoir.models.Teacher;
+import com.example.devoir.models.User;
 import com.example.devoir.repositories.TeacherRepository;
+import com.example.devoir.repositories.UserRepository;
 import com.example.devoir.services.SchoolClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,9 @@ public class SchoolClassController {
     @Autowired
     private TeacherRepository teacherRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
 
 
     @GetMapping
@@ -35,14 +40,15 @@ public class SchoolClassController {
 
     @GetMapping("/teacher/{teacherId}")
     public List<SchoolClass> getClassesByTeacher(@PathVariable Long teacherId) {
-        Teacher teacher = new Teacher(); // find teacher by id (add code here)
+        User user = userRepository.findById(teacherId).orElseThrow(() -> new RuntimeException("User not found"));
+        Teacher teacher = teacherRepository.findByUserId(user.getId()).orElseThrow(() -> new RuntimeException("Teacher not found")); // find teacher by id (add code here)
         return schoolClassService.getClassesByTeacher(teacher);
     }
 
 
 
-    @PostMapping("/{classId}/add-student")
-    public void addStudentToClass(@PathVariable Long classId, @RequestBody Student student) {
-        schoolClassService.addStudentToClass(classId, student);
+    @PostMapping("/{classId}/{studentId}/add-student")
+    public void addStudentToClass(@PathVariable Long classId, @PathVariable Long studentId) {
+        schoolClassService.addStudentToClass(classId, studentId);
     }
 }

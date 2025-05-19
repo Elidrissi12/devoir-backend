@@ -1,5 +1,6 @@
 package com.example.devoir.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class Student{
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     private SchoolClass schoolClass;
 
     private Double averageGrade;
@@ -45,6 +47,14 @@ public class Student{
 
     public User getUser() {
         return user;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setUser(User user) {
